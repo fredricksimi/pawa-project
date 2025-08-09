@@ -5,7 +5,7 @@ app = Flask(__name__)
 @app.route("/analyze", methods=['POST'])
 def hello_world():
     if not request.is_json:
-        return jsonify({"Error": "No data inrequest body"}), 400
+        return jsonify({"Error": "No data inrequest body!"}), 400
     
     data = request.get_json()
     payload = data.get("text")

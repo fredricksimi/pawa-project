@@ -21,7 +21,7 @@ steps:
       terraform apply -auto-approve \
         -var="gcp_project_id=${_PROJECT_ID}" \
         -var="gcp_region=${_GCP_REGION}" \
-        -var="repo_name={_REPO_NAME}" \
+        -var="repo_name=${_REPO_NAME}" \
         -var="docker_image=${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME"
 
 options:

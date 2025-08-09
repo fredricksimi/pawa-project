@@ -57,5 +57,5 @@ resource "google_cloud_run_v2_service" "default" {
       image = var.docker_image
     }
   }
-  depends_on = [google_service_account.cloud_run_service_account.id]
+  depends_on = [google_service_account.cloud_run_service_account.name]
 }

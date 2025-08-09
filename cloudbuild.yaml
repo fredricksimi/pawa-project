@@ -3,6 +3,7 @@ substitutions:
  _PROJECT_ID: "eternal-empire-465908-c3"
  _REPO_NAME: "my-repository"
  _DOCKER_IMAGE_NAME: "my-app"
+ 
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['']

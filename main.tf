@@ -40,12 +40,6 @@ resource "google_artifact_registry_repository" "my_repo" {
   depends_on = [google_project_service.artifact_registry_api,]
 }
 
-resource "google_service_account" "cloud_run_service_account" {
-  project = var.gcp_project_id
-  account_id = "pawa-project-service-account"
-  display_name = "Service Account for Pawa SA Cloud Run service"
-}
-
 resource "google_cloud_run_v2_service" "default" {
   name     = "cloudrun-service"
   location = var.gcp_region

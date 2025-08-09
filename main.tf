@@ -46,28 +46,16 @@ resource "google_service_account" "cloud_run_service_account" {
   display_name = "Service Account for Pawa SA Cloud Run service"
 }
 
-resource "google_cloudbuild_trigger" "default" {
+resource "google_cloud_run_v2_service" "default" {
+  name     = "cloudrun-service"
   location = var.gcp_region
-  name = "cloud-build-trigger"
-  github {
-    owner = "FredrickSimi"
-    name = "pawa-project"
-    push {
-      branch = "main"
+  deletion_protection = false
+  ingress = "INGRESS_TRAFFIC_INTERNAL_ONLY"
+
+  template {
+    containers {
+      image = var.docker_image
     }
   }
-  filename = "cloudbuild.yaml"
-}
-
-resource "google_secret_manager_secret" "github_token_secret" {
-  project = var.gcp_project_id
-  secret_id = "github_token"
-  replication {
-    auto {}
-  }
-}
-
-resource "google_secret_manager_secret_version" "github_token_secret_version" {
-  secret = google_secret_manager_secret.github_token_secret.id
-  secret_data = 
+  depends_on = [google_service_account.cloud_run_service_account.id]
 }

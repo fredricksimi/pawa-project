@@ -40,18 +40,3 @@ resource "google_artifact_registry_repository" "my_repo" {
   depends_on = [google_project_service.artifact_registry_api,]
 }
 
-resource "google_cloud_run_v2_service" "default" {
-  name     = "cloudrun-service"
-  location = var.gcp_region
-  deletion_protection = false
-  ingress = "INGRESS_TRAFFIC_INTERNAL_ONLY"
-
-  template {
-    containers {
-      image = var.docker_image
-      ports {
-        container_port = 5000
-      }
-    }
-  }
-}

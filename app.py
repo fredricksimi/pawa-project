@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Create the endpoint here!
+# Create the endpoint he
 @app.route("/analyze", methods=['POST'])
 def hello_world():
     if not request.is_json:

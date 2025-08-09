@@ -3,10 +3,8 @@ substitutions:
  _PROJECT_ID: "eternal-empire-465908-c3"
  _REPO_NAME: "my-repository"
  _DOCKER_IMAGE_NAME: "my-app"
- 
+
 steps:
-- name: 'gcr.io/cloud-builders/gcloud'
-  args: ['']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME', '.']
 

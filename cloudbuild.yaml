@@ -1,0 +1,26 @@
+substitutions:
+ _GCP_REGION: "us-east1"
+ _PROJECT_ID: "eternal-empire-465908-c3"
+ _REPO_NAME: "my-repository"
+ _DOCKER_IMAGE_NAME: "my-app"
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME', '.']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME']
+
+- name: 'hashicorp/terraform:latest'
+  id: Terraform_deploy
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      terraform init
+      terraform apply -auto-approve \
+        -var="gcp_project_id=${_PROJECT_ID}" \
+        -var="gcp_region=${_GCP_REGION}" \
+        -var="repo_name={_REPO_NAME}" \
+        -var="docker_image=${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME"

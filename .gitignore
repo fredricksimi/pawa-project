@@ -1,0 +1,45 @@
+# Python
+# Virtual environment folder
+venv/
+.venv/
+env/
+.env/
+
+# Byte-code and compiled files
+__pycache__/
+*.py[co]
+*.pyd
+
+# Dependencies
+requirements.txt
+
+# Editor and IDE files
+.vscode/
+.idea/
+
+# Terraform
+# Terraform state files - DO NOT COMMIT THESE!
+terraform.tfstate
+terraform.tfstate.backup
+plan.out
+.terraform.lock.hcl
+
+# Local directories
+.terraform/
+
+# Docker
+# Ignore local secrets and temporary files
+.dockerignore
+
+# GCP credentials and secrets
+# Do NOT commit any files containing API keys, service account credentials, etc.
+# Examples:
+# credentials.json
+gcp_credentials.json
+# *.tfvars
+# *.p12
+
+# Project specific
+# Any other files that should be excluded
+.DS_Store
+*.log

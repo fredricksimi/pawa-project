@@ -3,6 +3,11 @@ variable "gcp_project_id" {
     default = "eternal-empire-465908-c3"
 }
 
+variable "gcp_vpc_network" {
+    type = string
+    default = "default"
+}
+
 variable "gcp_region" {
     type = string
     default = "us-east1"
@@ -26,4 +31,25 @@ variable "container_port" {
 variable "docker_image" {
     type = string
     default = ""
+}
+
+# Serveless VPC Access connection
+variable "gcp_serverless_vpc_subnet" {
+    type = string
+    default = "192.168.100.0/28"
+}
+
+variable "gcp_serverless_machine_type" {
+    type = string
+    default = "e2-standard-4"
+}
+
+variable "gcp_serverless_min_instances" {
+    type = number
+    default = 2
+}
+
+variable "gcp_serverless_max_instances" {
+    type = number
+    default = 3
 }

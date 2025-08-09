@@ -32,8 +32,6 @@ resource "google_project_service" "cloud_run_api" {
   disable_on_destroy = false
 }
 
-
-
 resource "google_cloud_run_v2_service" "default" {
   name     = "cloudrun-service"
   location = var.gcp_region
@@ -47,5 +45,27 @@ resource "google_cloud_run_v2_service" "default" {
         container_port = 5000
       }
     }
+    vpc_access {
+      connector = google_vpc_access_connector.connector.id
+      egress = "ALL_TRAFFIC"
+    }
   }
+}
+
+resource "google_vpc_access_connector" "connector" {
+  name          = "my-serverless-connector"
+  subnet {
+    name = google_compute_subnetwork.custom_subnetwork.name
+  }
+  machine_type = var.gcp_serverless_machine_type
+  min_instances = var.gcp_serverless_min_instances
+  max_instances = var.gcp_serverless_max_instances
+  region        = var.gcp_region
+}
+
+resource "google_compute_subnetwork" "custom_subnetwork" {
+  name          = "vpc-access-subnetwork"
+  ip_cidr_range = var.gcp_serverless_vpc_subnet
+  region        = var.gcp_region
+  network       = var.gcp_vpc_network
 }

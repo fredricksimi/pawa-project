@@ -5,6 +5,11 @@ terraform {
       version = "6.47.0"
     }
   }
+    # The GCS backend configuration
+    backend "gcs" {
+      bucket = var.terraform_state_bucket
+      prefix = "terraform/state" 
+    }
 }
 
 # Providing our Service Account Credientials and authenticating with GCP
@@ -12,7 +17,7 @@ provider "google" {
   project = var.gcp_project_id
   region = var.gcp_region
   zone = var.gcp_zone
-  #credentials = "gcp_credentials.json"
+  #credentials = "<gcp_credentials_file>.json" # For local testing purposes
 }
 
 # Enabling the Artifact Registry API on GCP
@@ -43,8 +48,26 @@ resource "google_artifact_registry_repository" "my_repo" {
   description   = "My docker repository"
   format        = "DOCKER"
   depends_on = [google_project_service.artifact_registry_api]
-  lifecycle {
-    ignore_changes = [ description ]
+}
+
+# Creating our Cloud Run Service on GCP. 
+resource "google_cloud_run_v2_service" "default" {
+  name     = "cloudrun-service"
+  location = var.gcp_region
+  deletion_protection = false
+  ingress = "INGRESS_TRAFFIC_INTERNAL_ONLY" # Setting the cloud Run service to Internal Traffic only
+
+  template {
+    containers {
+      image = var.docker_image
+      ports {
+        container_port = 5000
+      }
+    }
+    vpc_access {
+      connector = google_vpc_access_connector.connector.id
+      egress = "ALL_TRAFFIC"
+    }
   }
 }
 
@@ -67,33 +90,4 @@ resource "google_compute_subnetwork" "custom_subnetwork" {
   ip_cidr_range = var.gcp_serverless_vpc_subnet
   region        = var.gcp_region
   network       = var.gcp_vpc_network
-  lifecycle {
-    ignore_changes = [ name ]
-  }
-}
-
-
-
-###------------ THIS BLOCK BELOW WILL BE EXECUTED BY OUR CLOUD BUILD PROCESS WHEN REPO IS PUSHED TO GITHUB ---------------#####
-###--------------------------------- COMMENT OUT LINE 15 (GCP CREDENTIALS FILE)-------------------------------------------#####
-
-# Creating our Cloud Run Service on GCP. 
-resource "google_cloud_run_v2_service" "default" {
-  name     = "cloudrun-service"
-  location = var.gcp_region
-  deletion_protection = false
-  ingress = "INGRESS_TRAFFIC_INTERNAL_ONLY" # Setting the cloud Run service to Internal Traffic only
-
-  template {
-    containers {
-      image = var.docker_image
-      ports {
-        container_port = 5000
-      }
-    }
-    vpc_access {
-      connector = google_vpc_access_connector.connector.id
-      egress = "ALL_TRAFFIC"
-    }
-  }
 }

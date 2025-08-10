@@ -8,6 +8,11 @@ variable "gcp_vpc_network" {
     default = "default"
 }
 
+variable "terraform_state_bucket" {
+  type = string
+  default = "my-terraform-state-bucket-100825"
+}
+
 variable "gcp_region" {
     type = string
     default = "us-east1"

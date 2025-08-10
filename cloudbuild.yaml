@@ -4,6 +4,7 @@ substitutions:
  _PROJECT_ID: "eternal-empire-465908-c3"
  _REPO_NAME: "my-repository"
  _DOCKER_IMAGE_NAME: "my-app"
+ _TERRAFORM_GCP_BACKEND: "my-terraform-state-backend"
 
 steps:
 # Step 1: Install Python dependencies using the provided requirements.txt file
@@ -27,15 +28,32 @@ steps:
   id: 'Pushing our Docker image to our repository'
   args: ['push', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME']
 
-# Executing terraform with the substitutionn values provided above
-- name: 'hashicorp/terraform:latest'
-  id: 'Deploying our service using Terraform.'
+# Fetch Service Account Key from Secret Manager
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: 'Fetch Service Account key'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - 'gcloud secrets versions access latest --secret=terraform-service-account-key --out=key.json'
+
+# Install Terraform, set credentials and run the commands. Store the Terraform state in the GCS backend
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: 'Run Terraform commands'
   entrypoint: 'sh'
   args:
     - '-c'
     - |
-      terraform init
-      terraform apply -auto-approve \
+      export GOOGLE_APPLICATION_CREDENTIALS="./key.json"
+
+      wget https://releases.hashicorp.com/terraform/1.12.2/terraform_1.12.2_linux_386.zip
+      unzip terraform_1.12.2_linux_386.zip
+      mv terraform /usr/local/bin/
+
+      terraform init -backend-config="bucket=${_TERRAFORM_GCP_BACKEND}"
+
+      # Plan and apply the changes.
+      terraform plan -out=tfplan
+      terraform apply -auto-approve tfplan \
         -var="gcp_project_id=${_PROJECT_ID}" \
         -var="gcp_region=${_GCP_REGION}" \
         -var="repo_name=${_REPO_NAME}" \

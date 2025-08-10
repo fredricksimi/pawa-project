@@ -37,7 +37,7 @@ steps:
     - 'gcloud secrets versions access latest --secret=terraform-service-account-key --out-file=key.json'
 
 # Install Terraform, set credentials and run the commands. Store the Terraform state in the GCS backend
-- name: 'gcr.io/cloud-builders/terraform'
+- name: 'hashicorp/terraform:latest'
   id: 'Run Terraform commands'
   entrypoint: 'sh'
   args:

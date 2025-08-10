@@ -1,10 +1,10 @@
 # Environment variables that will be used when this cloudbuild config executes
 substitutions:
- _GCP_REGION: "us-east1"
- _PROJECT_ID: "eternal-empire-465908-c3"
- _REPO_NAME: "my-repository"
+ _GCP_REGION: ""
+ _PROJECT_ID: ""
+ _REPO_NAME: ""
  _DOCKER_IMAGE_NAME: "my-app"
- _TERRAFORM_GCP_BACKEND: "my-terraform-state-bucket-100825"
+ _TERRAFORM_GCP_BACKEND: ""
 
 steps:
 # Step 1: Install Python dependencies using the provided requirements.txt file

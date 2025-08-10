@@ -1,31 +1,31 @@
 variable "gcp_project_id" {
     type = string
-    default = "eternal-empire-465908-c3"
+    default = ""
 }
 
 variable "gcp_vpc_network" {
     type = string
-    default = "default"
+    default = ""
 }
 
 variable "terraform_state_bucket" {
   type = string
-  default = "my-terraform-state-bucket-100825"
+  default = ""
 }
 
 variable "gcp_region" {
     type = string
-    default = "us-east1"
+    default = ""
 }
 
 variable "gcp_zone" {
     type = string
-    default = "us-east1-a"
+    default = ""
 }
 
 variable "repo_name" {
     type = string
-    default = "my-repository"
+    default = ""
 }
 
 variable "container_port" {

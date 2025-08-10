@@ -7,16 +7,15 @@ substitutions:
 
 steps:
 # Step 1: Install Python dependencies using the provided requirements.txt file
-- name: 'python:3.13'
-  id: 'Install dependencies'
-  entrypoint: 'pip'
-  args: ['install', '-r', 'requirements.txt']
-
 # Run our tests using the tests.py file provided using the unittest framework, if tests fail, the build processstops
 - name: 'python:3.13'
-  id: 'Run the tests'
-  entrypoint: 'python'
-  args: ['-m', 'unittest', 'tests.py']
+  id: 'Install dependencies and run tests'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      pip install -r requirements.txt
+      python -m unittest tests.py
 
 # Building our Docker image
 - name: 'gcr.io/cloud-builders/docker'

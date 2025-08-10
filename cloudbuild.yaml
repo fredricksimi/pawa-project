@@ -19,15 +19,17 @@ steps:
 
 # Building our Docker image
 - name: 'gcr.io/cloud-builders/docker'
+  id: 'Building our Docker image'
   args: ['build', '-t', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME', '.']
 
 # Pushing our docker image to Artifact registry on our GCP rpoject
 - name: 'gcr.io/cloud-builders/docker'
+  id: 'Pushing our Docker image to our repository'
   args: ['push', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME']
 
 # Executing terraform with the substitutionn values provided above
 - name: 'hashicorp/terraform:latest'
-  id: Terraform_deploy
+  id: 'Deploying our service using Terraform.'
   entrypoint: 'sh'
   args:
     - '-c'

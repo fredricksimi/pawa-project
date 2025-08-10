@@ -163,7 +163,7 @@ Before you begin, you need to set up the following:
 
         > TOKEN=$(gcloud auth print-identity-token)
         > 
-        > curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -d '{"text": "I love cloud engineering!"}' https://cloudrun-service-554649136549.us-east1.run.app/analyze
+        > curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -d '{"text": "I love cloud engineering!"}' https://CLOUD-RUN-SERVICE-URL/analyze
         >
         >
 

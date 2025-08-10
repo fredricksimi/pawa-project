@@ -23,21 +23,24 @@ steps:
   id: 'Building our Docker image'
   args: ['build', '-t', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME', '.']
 
-# Pushing our docker image to Artifact registry on our GCP rpoject
-- name: 'gcr.io/cloud-builders/gcloud'
-  id: 'Pushing our Docker image to our repository'
+# Creating our Artifact registry repo on our GCP rpoject
+- name: 'hashicorp/terraform:latest'
+  id: 'Creating our repository to push our image'
   entrypoint: 'sh'
   args:
     - '-c'
     - |
       terraform init -backend-config="bucket=${_TERRAFORM_GCP_BACKEND}"
-      
+
       terraform apply -auto-approve -target=google_artifact_registry_repository.my_repo \
         -var="gcp_project_id=${_PROJECT_ID}" \
         -var="gcp_region=${_GCP_REGION}" \
         -var="repo_name=${_REPO_NAME}"
 
-      docker push ${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME
+# Pushing our Docker image to our repo
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Pushing our Docker image'
+  args: ['push', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME']
 
 # Fetch Service Account Key from Secret Manager
 - name: 'gcr.io/cloud-builders/gcloud'

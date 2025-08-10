@@ -1,3 +1,4 @@
+# Environment variables that will be used when this cloudbuild config executes
 substitutions:
  _GCP_REGION: "us-east1"
  _PROJECT_ID: "eternal-empire-465908-c3"
@@ -5,12 +6,27 @@ substitutions:
  _DOCKER_IMAGE_NAME: "my-app"
 
 steps:
+# Step 1: Install Python dependencies using the provided requirements.txt file
+- name: 'python:3.13'
+  id: 'Install dependencies'
+  entrypoint: 'pip'
+  args: ['install', '-r', 'requirements.txt']
+
+# Run our tests using the tests.py file provided using the unittest framework, if tests fail, the build processstops
+- name: 'python:3.13'
+  id: 'Run the tests'
+  entrypoint: 'python'
+  args: ['-m', 'unittest', 'tests.py']
+
+# Building our Docker image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME', '.']
 
+# Pushing our docker image to Artifact registry on our GCP rpoject
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME']
 
+# Executing terraform with the substitutionn values provided above
 - name: 'hashicorp/terraform:latest'
   id: Terraform_deploy
   entrypoint: 'sh'
@@ -24,5 +40,6 @@ steps:
         -var="repo_name=${_REPO_NAME}" \
         -var="docker_image=${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME"
 
+# For build process to write logs in the regional bucket
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET

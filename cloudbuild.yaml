@@ -24,9 +24,9 @@ steps:
   args: ['build', '-t', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME', '.']
 
 # Pushing our docker image to Artifact registry on our GCP rpoject
-- name: 'gcr.io/cloud-builders/docker'
-  id: 'Pushing our Docker image to our repository'
-  args: ['push', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME']
+# - name: 'gcr.io/cloud-builders/docker'
+#   id: 'Pushing our Docker image to our repository'
+#   args: ['push', '${_GCP_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO_NAME}/$_DOCKER_IMAGE_NAME']
 
 # Fetch Service Account Key from Secret Manager
 - name: 'gcr.io/cloud-builders/gcloud'

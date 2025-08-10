@@ -50,6 +50,12 @@ resource "google_artifact_registry_repository" "my_repo" {
   depends_on = [google_project_service.artifact_registry_api]
 }
 
+data "google_artifact_registry_docker_image" "my_image" {
+  location      = google_artifact_registry_repository.my_repo.location
+  repository_id = google_artifact_registry_repository.my_repo.repository_id
+  image_name    = var.docker_image
+}
+
 # Creating our Cloud Run Service on GCP. 
 resource "google_cloud_run_v2_service" "default" {
   name     = "cloudrun-service"
@@ -59,7 +65,7 @@ resource "google_cloud_run_v2_service" "default" {
 
   template {
     containers {
-      image = var.docker_image
+      image = data.google_artifact_registry_docker_image.my_image.self_link
       ports {
         container_port = 5000
       }

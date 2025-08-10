@@ -4,7 +4,7 @@ substitutions:
  _PROJECT_ID: "eternal-empire-465908-c3"
  _REPO_NAME: "my-repository"
  _DOCKER_IMAGE_NAME: "my-app"
- _TERRAFORM_GCP_BACKEND: "my-terraform-state-backend"
+ _TERRAFORM_GCP_BACKEND: "my-terraform-state-bucket-100825"
 
 steps:
 # Step 1: Install Python dependencies using the provided requirements.txt file

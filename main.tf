@@ -43,6 +43,9 @@ resource "google_artifact_registry_repository" "my_repo" {
   description   = "My docker repository"
   format        = "DOCKER"
   depends_on = [google_project_service.artifact_registry_api]
+  lifecycle {
+    ignore_changes = [ description ]
+  }
 }
 
 # Creating our Serveless VPC Access Connector on GCP that 
@@ -64,6 +67,9 @@ resource "google_compute_subnetwork" "custom_subnetwork" {
   ip_cidr_range = var.gcp_serverless_vpc_subnet
   region        = var.gcp_region
   network       = var.gcp_vpc_network
+  lifecycle {
+    ignore_changes = [ name ]
+  }
 }
 
 
